@@ -189,7 +189,7 @@
               <br>
               We define Bézier curves as the motion trajectories of keypoints.
               <br>
-              We select frame numbers <i>F</i>, define timesteps, and sample points along the adjusted Bézier paths to determine new positions of keypoints.
+              We select frame numbers <i>Q</i>, define timesteps, and sample points along the adjusted Bézier paths to determine new positions of keypoints.
               These new keypoints guide the ARAP algorithm to warp the triangular mesh, transforming the clipart to new poses.
               <br>
               Subsequently, we use a differentiable renderer to convert the updated shapes into a video <i>V</i> and send it to a video diffusion model to compute VSDS loss. We also incorporate a skeleton loss to maintain the original shape.
@@ -209,6 +209,9 @@
     </div>
     <div class="section-title has-text-centered is-centered">
       <h2 class="title is-3">Gallery</h2><br>
+    </div>
+    <div class="section is-centered has-text-centered">
+      If images are not loaded properly, please refresh the page.
     </div>
     <div class="container is-max-desktop is-centered has-text-centered">
       <div class="gallery">
