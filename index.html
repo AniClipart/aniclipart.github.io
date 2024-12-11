@@ -50,15 +50,13 @@
             <span class="author-block"><a href="https://kedema.org/" target="_blank">Kede Ma</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://www.cityu.edu.hk/stfprofile/jingliao.htm" target="_blank">Jing Liao</a><sup>1</sup></span>
           </div>
-          <br>
-          <div class="is-size-5 publication-authors">
+          <div class="is-size-6 publication-authors">
             <span class="author-block"><sup>1</sup>City University of Hong Kong, <sup>2</sup>Monash University</span> 
           </div>
-
-          <div class="is-size-5 publication-authors">
+          <br>
+          <div class="is-size-4 publication-authors">
             <span class="author-block">International Journal of Computer Vision (IJCV)</span> 
           </div>
-
 
           <div class="column has-text-centered">
             <div class="publication-links">
@@ -168,11 +166,9 @@
       <h2 class="title is-3">Abstract</h2>
         <div class="content has-text-justified">
         <p>
-          Clipart, a pre-made graphic art form, offers a convenient and efficient way of illustrating visual content. Traditional workflows to convert static clipart images into motion sequences are laborious and time-consuming, involving numerous intricate steps like rigging and in-betweening. Recent advancements in text-to-video generation hold great potential in resolving this problem. Nevertheless, direct application of text-to-video generation models often struggles to retain the visual identity of clipart images or generate iconic (i.e., cartoon-style) motions, resulting in unsatisfactory animation outcomes.
+          Clipart, a pre-made art form, offers a convenient and efficient way of creating visual content. However, traditional workflows for animating static clipart are laborious and time-consuming, involving steps like rigging, keyframing, and inbetweening. Recent advancements in text-to-video generation hold great potential in resolving this challenge. Nevertheless, direct application of text-to-video models often struggles to preserve the visual identity of clipart or generate cartoon-style motion, resulting in subpar animation outcomes.
           <br>
-          In this paper, we introduce AniClipart, a system that transforms static clipart images into high-quality motion sequences guided by text-to-video priors. To generate iconic and smooth motion, we first define Bézier curves over keypoints of the clipart image as a form of motion regularization. We then align the motion trajectories of the keypoints with the provided text prompt by optimizing the Video Score Distillation Sampling (VSDS) loss, which encodes adequate knowledge of natural motion within a pretrained text-to-video diffusion model. With a differentiable As-Rigid-As-Possible shape deformation algorithm, our method can be end-to-end optimized while maintaining deformation rigidity.
-          <br>
-          Experimental results show that the proposed AniClipart consistently outperforms existing image-to-video generation models, in terms of text-video alignment, visual identity preservation, and motion consistency. Furthermore, we showcase the versatility of AniClipart by adapting it to generate a broader array of animation formats, such as layered animation, which allows topological changes.
+          In this paper, we introduce AniClipart, a computational system that converts static clipart into high-quality animations guided by text-to-video priors. To generate natural, smooth, and coherent motion, we first parameterize the motion trajectories of the keypoints defined over the initial clipart image by cubic Bézier curves. We then align these motion trajectories with a given text prompt by optimizing a video Score Distillation Sampling (SDS) loss and a skeleton fidelity loss. By incorporating differentiable As-Rigid-As-Possible (ARAP) shape deformation and differentiable rendering, AniClipart can be end-to-end optimized while maintaining deformation rigidity. Extensive experimental results show that the proposed AniClipart consistently outperforms the competing methods, in terms of text-video alignment, visual identity preservation, and temporal consistency. Additionally, we showcase the versatility of AniClipart by adapting it to generate layered animations, which allow for topological changes.
         </p>
         </div>
     </div>
@@ -191,12 +187,10 @@
           <img id="network" src="static/images/method/pipeline.png" />
           <div class="content has-text-justified">
               <br>
-              We define Bézier curves as the motion trajectories of keypoints.
-              <br>
-              We select frame numbers <i>Q</i>, define timesteps, and sample points along the adjusted Bézier paths to determine new positions of keypoints.
-              These new keypoints guide the ARAP algorithm to warp the triangular mesh, transforming the clipart to new poses.
-              <br>
-              Subsequently, we use a differentiable renderer to convert the updated shapes into a video <i>V</i> and send it to a video diffusion model to compute VSDS loss. We also incorporate a skeleton loss to maintain the original shape.
+              Given an initial clipart image with <i>M</i> keypoints, we initialize <i>M</i> corresponding cubic Bézier motion trajectories, parameterized by {c<sup>(i)</sup>}<sub>i=0</sub><sup>M-1</sup>.
+              For a sequence of <i>N</i> frames, keypoints are updated at each frame by sampling along these trajectories. The displaced keypoints are responsible for driving the ARAP shape deformation algorithm, which warps the object, represented by a triangle mesh, into new poses.
+              This gives rise to a clipart animation, which is (optionally rasterized and) passed to a T2V model to compute the video SDS loss.
+              To ensure motion coherence across all keypoints, a skeleton fidelity loss is also applied, penalizing changes in bone lengths over time.
           </div>
       </div>
   </div>
@@ -866,30 +860,27 @@
                 <h6 class="caption">Input Sketch</h6>
               </div>
               <div class="captioned_video">
-                <h6 class="caption">Ours</h6>
+                <h6 class="caption">Default</h6>
               </div>
               <div class="captioned_video">
-                <h6 class="caption">Linear Blend Skinning</h6>
+                <h6 class="caption">ARAP Deformation → Linear Blend Skinning</h6>
               </div>
               <div class="captioned_video">
-                <h6 class="caption">w/o Trajectory</h6>
+                <h6 class="caption"> w/o Bézier Trajectory Parameterization</h6>
               </div>
               <div class="captioned_video">
-                <h6 class="caption">Linear Interpolation</h6>
+                <h6 class="caption">First-order Bézier Trajectory Parameterization</h6>
               </div>
               <div class="captioned_video">
-                <h6 class="caption">Image SDS Loss</h6>
+                <h6 class="caption">Video SDS Loss → Image SDS Loss</h6>
               </div> 
               <div class="captioned_video">
-                <h6 class="caption">w/o Skeleton Loss</h6>
+                <h6 class="caption">w/o Skeleton Fidelity Loss</h6>
               </div> 
             </div> 
           </div>
         </div>
 
-      <div class="caption is-centered has-text-centered">
-        Eliminating key components from our system could lead to animations with restricted movements (e.g., "Linear Interpolation" and "Image SDS Loss"), shape distortions (e.g., "Linear Blend Skinning" and "w/o Skeleton Loss"), and inconsistencies across frames (e.g., "w/o Trajectory").     
-      </div>
 </section>
 
 
